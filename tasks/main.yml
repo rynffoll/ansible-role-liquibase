@@ -1,0 +1,63 @@
+- name: Get java version
+  tags: [java]
+  shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g' | sed 's/_.*//'
+  register: java_version
+
+- name: Check java version
+  tags: [java]
+  assert:
+    that:
+      - java_version.stdout | version_compare('1.6', '>=')
+      - java_version.stdout | version_compare('1.8', '<=')
+
+- name: Download liquibase
+  tags: [download]
+  unarchive:
+    src: {{ liquibase_src }}
+    dest: {{ liquibase_dest }}
+    remote_src: yes
+
+- name: Download database driver
+  tags: [driver]
+  get_url:
+    url: {{ liquibase_driver_src }}
+    dest: {{ liquibase_driver_dest }}
+
+- name: Copy liquibase.properties
+  tags: [config]
+  template:
+    src: "{{ liquibase_external_files }}/liquibase.properties.j2"
+    dest: "{{ playbook_dir }}/liquibase.properties"
+
+- name: Run liquibase status
+  tags: [status]
+  shell: "{{ liquibase_cmd }} status"
+  args:
+    chdir: {{ playbook_dir }}
+
+- name: Run liquibase update
+  tags: [update]
+  shell: "{{ liquibase_cmd }} update"
+  args:
+    chdir: {{ playbook_dir }}
+
+- name: Run liquibase rollback
+  tags: [rollback]
+  shell: "{{ liquibase_cmd }} rollback {{ liquibase_rollback_tag }}"
+  args:
+    chdir: {{ playbook_dir }}
+  when: liquibase_rollback_tag is defined
+
+- name: Run liquibase rollbackCount
+  tags: [rollback]
+  shell: "{{ liquibase_cmd }} rollbackCount {{ liquibase_rollback_count }}"
+  args:
+    chdir: {{ playbook_dir }}
+  when: liquibase_rollback_count is defined
+
+- name: Run liquibase rollbackToDate
+  tags: [rollback]
+  shell: "{{ liquibase_cmd }} rollbackToDate {{ liquibase_rollback_date }}"
+  args:
+    chdir: {{ playbook_dir }}
+  when: liquibase_rollback_date is defined

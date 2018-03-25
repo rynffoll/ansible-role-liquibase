@@ -1,0 +1,9 @@
+* DONE how to pass encrypted liquibase.properties
+CLOSED: [2018-03-25 Sun 02:58]
+:PROPERTIES:
+:CREATED:  <2018-03-25 Sun 02:51>
+:END:
+* TODO write tests
+:PROPERTIES:
+:CREATED:  <2018-03-25 Sun 02:52>
+:END:

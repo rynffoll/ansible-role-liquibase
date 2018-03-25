@@ -1,0 +1,17 @@
+liquibase_version: 3.5.5
+liquibase_src: https://github.com/liquibase/liquibase/releases/download/liquibase-parent-{{ liquibase_version }}/liquibase-{{ liquibase_version }}-bin.tar.gz
+liquibase_dest: /tmp/liquibase-{{ liquibase_version }}
+liquibase_cmd: java -jar {{ liquibase_dest }}/liquibase
+
+liquibase_driver_src: https://jdbc.postgresql.org/download/postgresql-42.2.2.jar
+liquibase_driver_dest: {{ liquibase_dest }}
+
+liquibase_external_files: "{{ playbook_dir }}/files"
+liquibase_external_templates: "{{ playbook_dir }}/templates"
+
+# liquibase.properties
+liquibase_driver_class: org.postgresql.Driver
+liquibase_url: jdbc:postgresql://localhost:5432/postgres
+liquibase_username: postgres
+liquibase_password: secret
+liquibase_changelog: "{{ playbook_dir }}/db-migrations/changelog.xml"
