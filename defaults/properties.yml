@@ -1,0 +1,6 @@
+---
+liquibase_driver_class: org.postgresql.Driver
+liquibase_url: jdbc:postgresql://localhost:5432/postgres
+liquibase_username: postgres
+liquibase_password: secret
+liquibase_changelog: "{{ playbook_dir }}/db-migrations/changelog.xml"
