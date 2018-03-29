@@ -1,4 +1,3 @@
----
 - name: Get java version
   tags: [java]
   shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g' | sed 's/_.*//'
@@ -8,8 +7,13 @@
   tags: [java]
   assert:
     that:
-      - java_version.stdout | version_compare('1.6', '>=')
-      - java_version.stdout | version_compare('1.8', '<=')
+      - java_version.stdout is version_compare('1.6.0', '>=')
+      - java_version.stdout is version_compare('1.8.0', '<=')
+
+- name: Create directory for liquibase
+  file:
+    path: "{{ liquibase_dest }}"
+    state: directory
 
 - name: Download liquibase
   tags: [download]
@@ -22,12 +26,13 @@
   tags: [driver]
   get_url:
     url: "{{ liquibase_driver_src }}"
-    dest: "{{ liquibase_driver_dest }}"
+    # dest: "{{ liquibase_driver_dest }}"
+    dest: "{{ playbook_dir }}"
 
 - name: Copy liquibase.properties
   tags: [config]
   template:
-    src: "{{ liquibase_external_files }}/liquibase.properties.j2"
+    src: "liquibase.properties.j2"
     dest: "{{ playbook_dir }}/liquibase.properties"
     mode: "0600"
 
